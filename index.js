@@ -4,8 +4,6 @@ module.exports = pixelmatch;
 
 function pixelmatch(img1, img2, output, width, height, options) {
 
-    if (img1.length !== img2.length) throw new Error('Image sizes do not match.');
-
     if (!options) options = {};
 
     var threshold = options.threshold === undefined ? 0.1 : options.threshold;
@@ -40,8 +38,17 @@ function pixelmatch(img1, img2, output, width, height, options) {
 
             } else if (output) {
                 // pixels are similar; draw background as grayscale image blended with white
-                var val = blend(grayPixel(img1, pos), 0.1);
-                drawPixel(output, pos, val, val, val);
+                //var val = grayPixel(img1, pos);
+                if(options.useOrigialValues) {
+                    var r = img1[pos];
+                    var g = img1[pos + 1];
+                    var b = img2[pos + 2];
+                    drawPixel(output, pos, r, g, b);
+                } else {
+                    var val = blend(grayPixel(img1, pos), 0.1);
+                    drawPixel(output, pos, val, val, val);
+                }
+                
             }
         }
     }
